@@ -124,7 +124,7 @@ namespace BeautiqueWeb.Areas.Customer.Controllers
                 //профіль користовуча і нам потрібно зафіксувати платіж
                 //логіка stripe
 
-                var domain = "https://localhost:7169/";
+                var domain = "https://beautiquewebq-b8cyb6b6h5hchqe3.westus3-01.azurewebsites.net/";
                 var options = new SessionCreateOptions
                 {
                     SuccessUrl = domain + $"customer/cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",

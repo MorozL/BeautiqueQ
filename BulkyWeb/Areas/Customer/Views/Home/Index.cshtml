@@ -1,7 +1,8 @@
-﻿@{
+﻿@using System.Linq
+@model IEnumerable<Beautique.Models.Product>
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 
 <body>
     <header class="py-5 text-center">
@@ -11,26 +12,71 @@
         </div>
     </header>
 
+    <section class="py-3">
+        <div class="container-fluid px-4">
+            <div class="row mb-4">
+                <div class="col-md-6 offset-md-3">
+                    <form asp-action="Index" method="get">
+                        <div class="input-group">
+                            <input type="text" name="searchString" class="form-control"
+                                   placeholder="Search products..."
+                                   value="@Context.Request.Query["searchString"]" />
+                            <button class="btn btn-outline-secondary" type="submit">
+                                <i class="bi bi-search"></i> Search
+                            </button>
+                            @if (!string.IsNullOrEmpty(Context.Request.Query["searchString"]))
+                            {
+                                <a asp-action="Index" class="btn btn-outline-danger">Clear</a>
+                            }
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="py-5">
         <div class="container-fluid px-2">
-            <div class="row g-4 justify-content-center">
-                @foreach (var product in Model)
-                {
-                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
-                        <div class="card border-0 shadow-lg">
-                            <img src="@product.ImageUrl" class="card-img-top" alt="@product.Title" />
-                            <div class="card-body">
-                                <h5 class="fw-bolder">@product.Title</h5>
-                                <p class="text-warning">by <b>@product.Maker</b></p>
-                                <p class="text-muted text-decoration-line-through">@product.ListPrice.ToString("c")</p>
-                                <p class="fw-bold text-dark">As low as: @product.Price100.ToString("c")</p>
-                                <a asp-action="Details" asp-route-productId="@product.Id" class="btn btn-dark text-light">Details</a>
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5">
+                    <h4 class="text-muted">No products found matching your search criteria</h4>
+                </div>
+            }
+            else
+            {
+                <div class="row g-4 justify-content-center">
+                    @foreach (var product in Model)
+                    {
+                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                            <div class="card border-0 shadow-lg">
+                                <img src="@product.ImageUrl" class="card-img-top" alt="@product.Title" />
+                                <div class="card-body">
+                                    <h5 class="fw-bolder">@product.Title</h5>
+                                    <p class="text-warning">by <b>@product.Maker</b></p>
+                                    <p class="text-muted text-decoration-line-through">@product.ListPrice.ToString("c")</p>
+                                    <p class="fw-bold text-dark">As low as: @product.Price100.ToString("c")</p>
+                                    <a asp-action="Details" asp-route-productId="@product.Id" class="btn btn-dark text-light">Details</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                }
-            </div>
+                    }
+                </div>
+            }
         </div>
     </section>
 </body>
 
+<style>
+    .card {
+        transition: transform 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+    #searchInput:focus {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+</style>

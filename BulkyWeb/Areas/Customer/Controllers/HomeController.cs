@@ -20,9 +20,24 @@ namespace Beautique.Areas.Customer.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string searchString)
         {
-            IEnumerable<Product> productList = _unitOfWork.Product.GetAll(includeProperties: "Category");
+            IEnumerable<Product> productList;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                productList = _unitOfWork.Product.GetAll(
+                    p => p.Title.Contains(searchString) ||
+                         p.Maker.Contains(searchString) ||
+                         p.Description.Contains(searchString),
+                    includeProperties: "Category"
+                );
+            }
+            else
+            {
+                productList = _unitOfWork.Product.GetAll(includeProperties: "Category");
+            }
+
             return View(productList);
         }
 
